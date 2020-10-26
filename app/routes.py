@@ -1,35 +1,38 @@
+# app/routes.py
 import os
 from app import app
-from flask import Flask
+from flask import render_template, flash, redirect, url_for
+from app.forms import LoginForm
 #from models import Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from os import environ
 
 
-"""def create_app(test_config=None):
-    # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
-    )
+# login page
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        flash('Login requested for user {}, remember_me={}'.format(
+            form.username.data, form.remember_me.data))
+        return redirect(url_for('index'))
+    return render_template('login.html', title='Sign In', form=form)
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
-
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
-"""
+# index page
+@app.route('/')
+@app.route('/index')
+def index():
+    user = { 'username': 'Marc'}
+    posts = [
+        {
+            'author': {'username': 'John'},
+            'body': 'Beautiful day in Portland!'
+        },
+        {
+            'author': {'username': 'Susan'},
+            'body': 'The Avengers movie was so cool!'
+        }
+    ]
+    return render_template('index.html', title='Home', user=user, posts=posts)
     
-# a simple page that says hello
-@app.route('/hello')
-def hello():
-    return 'Hello, World!'

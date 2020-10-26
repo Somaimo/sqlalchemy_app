@@ -1,0 +1,2 @@
+FLASK_APP=alchemy_app.py
+FLASK_ENV=development

@@ -1,7 +1,9 @@
+# app/models.py
 from sqlalchemy import Column, Integer, String, Text, DateTime, Float, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from app import db
+from datetime import datetime
 
 
 class PlayerModel(db.Model):
@@ -53,6 +55,18 @@ class TeamModel(db.Model):
         nullable=False
     )
 
+    create_user_id = Column(
+        Integer,
+        ForeignKey('sqlalchemy_app_user.id'),
+        nullable=False
+    )
+
+    create_timestamp = Column(
+        DateTime,
+        index=True,
+        default=datetime.utcnow
+    )
+
     # Relationship
     city = relationship("CityModel", backref="team")
 
@@ -72,3 +86,15 @@ class CityModel(db.Model):
         String(100),
         nullable=False
     )
+
+class User(db.Model):
+    """Data Model for users."""
+    __tablename__ = "sqlalchemy_app_user"
+    id = Column(Integer, primary_key=True)
+    username = Column(String(64), index=True, unique=True)
+    email = Column(String(120), index=True, unique=True)
+    password_hash = Column(String(128))
+    teams = relationship('TeamModel', backref='creator', lazy='dynamic')
+
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
