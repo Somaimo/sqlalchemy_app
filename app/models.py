@@ -91,6 +91,7 @@ class CityModel(db.Model):
         nullable=False
     )
 
+
 class User(UserMixin, db.Model):
     """Data Model for users."""
     __tablename__ = "sqlalchemy_app_user"
@@ -99,6 +100,8 @@ class User(UserMixin, db.Model):
     email = Column(String(120), index=True, unique=True)
     password_hash = Column(String(128))
     teams = relationship('TeamModel', backref='creator', lazy='dynamic')
+    about_me = Column(String(140))
+    last_seen = Column(DateTime,default=datetime.utcnow)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
