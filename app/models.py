@@ -34,7 +34,7 @@ class PlayerModel(db.Model):
     )
 
     # Relationships
-    team = relationship("TeamModel", backref="player")
+    team = relationship("TeamModel", backref="players")
 
     def __repr__(self):
         return '<Person model {}>'.format(self.id)

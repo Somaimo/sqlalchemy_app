@@ -4,13 +4,13 @@ from app import app, db
 from flask import render_template, flash, redirect, url_for
 from flask import request
 from werkzeug.urls import url_parse
-from app.forms import LoginForm, EditrProfileForm
+from app.forms import LoginForm, EditProfileForm
 #from models import Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from os import environ
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User
+from app.models import User, TeamModel
 from datetime import datetime
 
 
@@ -53,7 +53,7 @@ def user(username):
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
-    form = EditrProfileForm()
+    form = EditProfileForm(current_user.username)
     if form.validate():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
@@ -70,15 +70,6 @@ def edit_profile():
 @app.route('/index')
 @login_required
 def index():
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
-    return render_template('index.html', title='Home', posts=posts)
+    teams = TeamModel.query.order_by(TeamModel.name)
+    return render_template('index.html', title='Home', teams=teams)
     
