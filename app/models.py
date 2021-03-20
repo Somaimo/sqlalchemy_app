@@ -77,6 +77,7 @@ class TeamModel(db.Model):
     def __repr__(self):
         return '<Team model {}>'.format(self.id)
 
+
 class CityModel(db.Model):
     """Data Model for cities."""
     __tablename__ = "sqlalchemy_app_city"
@@ -92,6 +93,11 @@ class CityModel(db.Model):
     )
 
 
+followers = db.Table('followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('sqlalchemy_app_user.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('sqlalchemy_app_teams.id'))
+)
+
 class User(UserMixin, db.Model):
     """Data Model for users."""
     __tablename__ = "sqlalchemy_app_user"
@@ -102,6 +108,12 @@ class User(UserMixin, db.Model):
     teams = relationship('TeamModel', backref='creator', lazy='dynamic')
     about_me = Column(String(140))
     last_seen = Column(DateTime,default=datetime.utcnow)
+    followed = db.relationship(
+        'TeamModel', secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == TeamModel.id),
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic'
+    )
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -115,6 +127,18 @@ class User(UserMixin, db.Model):
     def avatar(self, size):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
+    
+    def follow(self, team):
+        if not self.is_following(team):
+            self.followed.append(team)
+    
+    def unfollow(self, team):
+        if self.is_following(team):
+            self.followed.remove(team)
+    
+    def is_following(self, team):
+        return self.followed.filter(
+            followers.c.followed_id == team.id).count() > 0
 
 
 @login.user_loader

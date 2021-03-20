@@ -86,3 +86,16 @@ Traceback (most recent call last):
   File "/home/marc/programming/sqlalchemy_app/app/forms.py", line 23, in validate_username
     user = User.query.filter_by(username=self.username.data).first()
 NameError: name 'User' is not defined
+2021-03-20 20:54:32,660 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-20 20:54:51,853 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-20 20:56:13,814 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-20 20:56:25,491 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-20 21:23:52,876 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-20 21:34:26,025 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-20 21:35:36,089 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-20 21:36:24,751 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-20 21:36:38,906 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-20 21:37:05,118 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-20 21:39:09,648 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-20 21:48:33,666 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-20 21:49:09,884 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29

@@ -4,7 +4,7 @@ from app import app, db
 from flask import render_template, flash, redirect, url_for
 from flask import request
 from werkzeug.urls import url_parse
-from app.forms import LoginForm, EditProfileForm
+from app.forms import LoginForm, EditProfileForm, EmptyForm
 #from models import Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -65,11 +65,44 @@ def edit_profile():
         form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', title='Edit Profile', form=form)
 
+@app.route('/follow/<teamid>', methods=['POST'])
+@login_required
+def follow(teamid):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        team = TeamModel.query.filter_by(id=teamid).first()
+        if team is None:
+            flash('Team with ID {} not found.'.format(teamid))
+            return redirect(url_for('indext'))
+        current_user.follow(team)
+        db.session.commit()
+        flash('You are now following {}!'.format(team.name))
+        return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+@app.route('/unfollow/<teamid>', methods=['POST'])
+@login_required
+def unfollow(teamid):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        team = TeamModel.query.filter_by(id=teamid).first()
+        if team is None:
+            flash('Team with ID {} not found.'.format(teamid))
+            return redirect(url_for('index'))
+        current_user.unfollow(team)
+        db.session.commit()
+        flash('You are not following {} anymore.'.format(team.name))
+        return redirect(url_for('index'))
+    else:
+        return redirect(url_for('indext'))
+
 # index page
 @app.route('/')
 @app.route('/index')
 @login_required
 def index():
     teams = TeamModel.query.order_by(TeamModel.name)
-    return render_template('index.html', title='Home', teams=teams)
+    form = EmptyForm()
+    return render_template('index.html', title='Home', teams=teams, form=form)
     

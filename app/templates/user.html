@@ -15,7 +15,13 @@
         </tr>
     </table>
     <hr>
+    <h2>Team Owner</h2>
     {% for team in teams %}
         {% include '_teams.html'  %}
+    {% endfor %}
+    <hr>
+    <h2>Following</h2>
+    {% for following in user.followed %}
+        {% include '_following.html'  %}
     {% endfor %}
 {% endblock %}
