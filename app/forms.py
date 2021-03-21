@@ -1,7 +1,7 @@
 # app/forms.py
 from flask_wtf import FlaskForm
 from app.models import User
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField, DateField, DateTimeField
 from wtforms.validators import ValidationError, DataRequired, Length
 
 class LoginForm(FlaskForm):
@@ -27,4 +27,16 @@ class EditProfileForm(FlaskForm):
 
 class EmptyForm(FlaskForm):
     submit = SubmitField('Submit')
-    
+
+class NewGameForm(FlaskForm):
+    homeTeam = SelectField('Home Team', validate_choice=False)
+    visitorTeam = SelectField('Visitor Team', validate_choice=False)
+    date = DateTimeField('Game date', format='%Y-%m-%d')
+    result = StringField('Result (Format Home:Visitor)', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+    def validate_homeTeam(form, self):
+        if self.data == form.visitorTeam.data:
+            raise ValidationError('Visitor and Home Teams cannot be the same.')
+
+

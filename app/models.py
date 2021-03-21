@@ -1,5 +1,5 @@
 # app/models.py
-from sqlalchemy import Column, Integer, String, Text, DateTime, Float, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, Float, Boolean, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.ext.declarative import declarative_base
@@ -22,7 +22,7 @@ class PlayerModel(db.Model):
     team_id = Column(
         Integer,
         ForeignKey('sqlalchemy_app_teams.id'),
-        nullable=False
+        nullable=True
     )
     name = Column(
         String(100),
@@ -97,6 +97,45 @@ followers = db.Table('followers',
     db.Column('follower_id', db.Integer, db.ForeignKey('sqlalchemy_app_user.id')),
     db.Column('followed_id', db.Integer, db.ForeignKey('sqlalchemy_app_teams.id'))
 )
+
+class Game(db.Model):
+    """Data model for games."""
+    __tablename__ = "sqlalchemy_app_games"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        nullable=False
+    )
+    hometeam_id = Column(
+        Integer,
+        ForeignKey('sqlalchemy_app_teams.id'),
+        nullable=False
+    )
+
+    visitorteam_id = Column(
+        Integer,
+        ForeignKey('sqlalchemy_app_teams.id'),
+        nullable=False
+    )
+
+    score = Column(
+        String(24),
+        nullable=False
+    )
+
+    playDate = Column(
+        Date,
+        index=True,
+        nullable=False
+    )
+
+    # Relationship
+    homeTeam = relationship("TeamModel", backref="homeTeam", foreign_keys=[hometeam_id])
+    visitorTeam = relationship("TeamModel", backref="visitorTeam", foreign_keys=[visitorteam_id])
+
+    def __repr__(self):
+        return '<Game model {}>'.format(self.id)
 
 class User(UserMixin, db.Model):
     """Data Model for users."""

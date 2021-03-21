@@ -4,4 +4,4 @@ This is a simple app showcasing a more complex python flask app. It is based on 
 
 ## Status
 
-I'm currently working on Chapter 8.
+I'm currently working on Chapter 9.5.

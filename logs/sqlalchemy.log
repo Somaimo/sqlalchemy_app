@@ -99,3 +99,6 @@ NameError: name 'User' is not defined
 2021-03-20 21:39:09,648 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
 2021-03-20 21:48:33,666 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
 2021-03-20 21:49:09,884 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-21 14:40:30,151 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-21 16:56:02,140 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29
+2021-03-21 16:56:12,591 INFO: SQLAlchemy startup [in /home/marc/programming/alchemy_app/app/__init__.py:29

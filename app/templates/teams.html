@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Football Teams</h1>
+    <table>
+        <tr>
+            <th>Team Name</th>
+            <th>City</th>
+            <th>Players</th>
+        </tr>
+        {% for team in teams %}
+            <tr>
+                <td>{{ team.name }}</td>
+                <td>{{ team.city.name }}</td>
+                <td>{% for player in team.players %}{{ player.name }}{% endfor %}</td>
+                {% if not current_user.is_following(team) %}
+                <td>
+                    <form action="{{ url_for('follow', teamid=team.id) }}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value='Follow') }}
+                    </form>
+                </td>
+                {% else %}
+                <td>
+                    <form action="{{ url_for('unfollow', teamid=team.id) }}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value='Unfollow') }}
+                    </form>
+                </td>
+                {% endif %}
+                </tr>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

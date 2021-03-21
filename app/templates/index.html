@@ -2,34 +2,21 @@
 
 {% block content %}
     <h1>Hi, {{ current_user.username }}!</h1>
-    <h2>Football Teams</h2>
+    <p>Welcome to Footballmaster. Your source for Football games.</p>
+    <h2>Games</h2>
     <table>
         <tr>
-            <th>Team Name</th>
-            <th>City</th>
-            <th>Players</th>
+            <th>Date</th>
+            <th>Hometeam</th>
+            <th>Visitors</th>
+            <th>Result</th>
         </tr>
-        {% for team in teams %}
+        {% for game in games %}
             <tr>
-                <td>{{ team.name }}</td>
-                <td>{{ team.city.name }}</td>
-                <td>{% for player in team.players %}{{ player.name }}{% endfor %}</td>
-                {% if not current_user.is_following(team) %}
-                <td>
-                    <form action="{{ url_for('follow', teamid=team.id) }}" method="post">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value='Follow') }}
-                    </form>
-                </td>
-                {% else %}
-                <td>
-                    <form action="{{ url_for('unfollow', teamid=team.id) }}" method="post">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value='Unfollow') }}
-                    </form>
-                </td>
-                {% endif %}
-                </tr>
+                <td>{{ game.playDate }}</td>
+                <td>{{ game.homeTeam.name }}</td>
+                <td>{{ game.visitorTeam.name }}</td>
+                <td>{{ game.score }}</td>
             </tr>
         {% endfor %}
     </table>

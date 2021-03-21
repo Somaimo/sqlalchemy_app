@@ -4,13 +4,13 @@ from app import app, db
 from flask import render_template, flash, redirect, url_for
 from flask import request
 from werkzeug.urls import url_parse
-from app.forms import LoginForm, EditProfileForm, EmptyForm
+from app.forms import LoginForm, EditProfileForm, EmptyForm, NewGameForm
 #from models import Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from os import environ
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, TeamModel
+from app.models import User, TeamModel, Game
 from datetime import datetime
 
 
@@ -73,13 +73,13 @@ def follow(teamid):
         team = TeamModel.query.filter_by(id=teamid).first()
         if team is None:
             flash('Team with ID {} not found.'.format(teamid))
-            return redirect(url_for('indext'))
+            return redirect(url_for('teams'))
         current_user.follow(team)
         db.session.commit()
         flash('You are now following {}!'.format(team.name))
-        return redirect(url_for('index'))
+        return redirect(url_for('teams'))
     else:
-        return redirect(url_for('index'))
+        return redirect(url_for('teams'))
 
 @app.route('/unfollow/<teamid>', methods=['POST'])
 @login_required
@@ -93,16 +93,42 @@ def unfollow(teamid):
         current_user.unfollow(team)
         db.session.commit()
         flash('You are not following {} anymore.'.format(team.name))
-        return redirect(url_for('index'))
+        return redirect(url_for('teams'))
     else:
-        return redirect(url_for('indext'))
+        return redirect(url_for('teams'))
 
 # index page
 @app.route('/')
 @app.route('/index')
 @login_required
 def index():
+    games = Game.query.order_by(Game.playDate)
+    return render_template('index.html', title='Home', games=games)
+    
+@app.route('/teams')
+@login_required
+def teams():
     teams = TeamModel.query.order_by(TeamModel.name)
     form = EmptyForm()
-    return render_template('index.html', title='Home', teams=teams, form=form)
-    
+    return render_template('teams.html', title='Teams', teams=teams, form=form)
+
+@app.route('/create', methods=['GET', 'POST'])
+@login_required
+def newGame():
+    form = NewGameForm()
+    if form.validate_on_submit():
+        game = Game(
+            hometeam_id=form.homeTeam.data,
+            visitorteam_id=form.visitorTeam.data,
+            score=form.result.data,
+            playDate=form.date.data
+        )
+        db.session.add(game)
+        db.session.commit()
+        flash('Created new Game.')
+        return redirect(url_for('index'))
+    elif request.method == 'GET':
+        app.logger.info('Creating new Game')
+    form.homeTeam.choices = [(int(g.id), g.name) for g in TeamModel.query.order_by('name')]
+    form.visitorTeam.choices = [(int(g.id), g.name) for g in TeamModel.query.order_by('name')]
+    return render_template('createGame.html', title='Create Game', form=form)
